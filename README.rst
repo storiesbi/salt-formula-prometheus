@@ -72,6 +72,8 @@ Configure prometheus server
           num_fingerprint_mutexes: 4096
       alertmanager:
         notification_queue_capacity: 10000
+        host: localhost
+        port: 9093
       config:
         global:
           scrape_interval: "15s"
@@ -134,6 +136,16 @@ Configure pushgateway
     pushgateway:
       enabled: true
       external_port: 15012
+
+.. code-block:: yaml
+
+  prometheus:
+    pushgateway:
+      enabled: true
+      telemetry_path: /metrics
+      bind:
+        address: 0.0.0.0
+        port: 9091
 
 Documentation and Bugs
 ======================

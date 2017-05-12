@@ -1,0 +1,9 @@
+applications:
+  - pushgateway
+parameters:
+  prometheus:
+    pushgateway:
+      enabled: true
+      bind:
+        address: localhost
+        port: 9091
