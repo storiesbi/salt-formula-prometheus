@@ -1,0 +1,3 @@
+{%- from "prometheus/map.jinja" import collectd_exporter with context %}
+# Set the command-line arguments to pass to the server.
+ARGS="-collectd.listen-address {{ collectd_exporter.bind.address }}:{{ collectd_exporter.bind.port }} -web.collectd-push-path {{ collectd_exporter.push_path }} "

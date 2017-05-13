@@ -61,6 +61,7 @@ prometheus_service:
       - file: prometheus_service_unit
       - file: {{server.dir.config}}/prometheus.yml
       - file: prometheus_bin_link
+      - file: {{server.dir.config}}/alerts.yml
 
 {%- endif %}
 

@@ -1,0 +1,18 @@
+[Unit]
+Description="An exporter for collectd. It accepts collectd's binary network protocol as sent by collectd's network plugin and metrics in JSON format via HTTP POST as sent by collectd's write_http plugin, and transforms and exposes them for consumption by Prometheus."
+Documentation=https://prometheus.io/docs/alerting/collectd_exporter/
+Wants=basic.target
+After=basic.target network.target
+
+[Service]
+User=prometheus
+Group=prometheus
+EnvironmentFile=/etc/default/collectd_exporter
+ExecStart=/usr/bin/collectd_exporter $ARGS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target

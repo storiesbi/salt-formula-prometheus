@@ -1,0 +1,7 @@
+applications:
+  - collect_exporter
+parameters:
+  prometheus:
+    collectd_exporter:
+      enabled: true
+      push_path: 'collectd'
