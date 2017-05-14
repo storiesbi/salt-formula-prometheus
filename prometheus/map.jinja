@@ -68,3 +68,29 @@ Debian:
 {%- endload %}
 
 {%- set pushgateway = salt['grains.filter_by'](pushgateway_defaults, merge=salt['pillar.get']('prometheus:pushgateway')) %}
+
+{%- set collectd_exporter_version = pillar.prometheus.get('collectd_exporter', {}).get('version', '0.3.1') %}
+
+{%- load_yaml as collectd_exporter_defaults %}
+{%- if pillar.docker is defined and pillar.docker.host is defined %}
+Debian:
+  dir:
+    config: /srv/volumes/prometheus
+{%- else %}
+Debian:
+  dir:
+    config: /etc/prometheus
+    storage: /var/lib/prometheus-collectd_exporter/metrics
+    install: /opt
+    version_path: /opt/collectd_exporter-{{ collectd_exporter_version }}.linux-amd64
+  version: {{ collectd_exporter_version }}.linux-amd64
+  source: https://github.com/prometheus/collectd_exporter/releases/download/{{ collectd_exporter_version }}/collectd_exporter-{{ collectd_exporter_version }}.linux-amd64.tar.gz
+  source_hash: 6460a15dab512f7485d7974d115677e9406d53fd
+  bind:
+    address: ''
+    port: 25826
+  push_path: ''
+{%- endif %}
+{%- endload %}
+
+{%- set collectd_exporter = salt['grains.filter_by'](collectd_exporter_defaults, merge=salt['pillar.get']('prometheus:collectd_exporter')) %}
