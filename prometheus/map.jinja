@@ -1,16 +1,70 @@
-{% set server = salt['grains.filter_by']({
-    'default': {
-        'dir': {
-            'config': '/srv/volumes/prometheus',
-            'config_in_container': '/opt/prometheus/config'
-        },
-    },
-}, merge=salt['pillar.get']('prometheus:server')) %}
 
-{% set alertmanager = salt['grains.filter_by']({
-    'default': {
-        'dir': {
-            'config': '/srv/volumes/prometheus',
-        },
-    },
-}, merge=salt['pillar.get']('prometheus:alertmanager')) %}
+{%- set version = pillar.prometheus.get('version', '1.6.2') %}
+
+{%- load_yaml as base_defaults %}
+{%- if pillar.docker is defined and pillar.docker.host is defined %}
+Debian:
+  dir:
+    config: /srv/volumes/prometheus
+    config_in_container: /opt/prometheus/config
+{%- else %}
+Debian:
+  dir:
+    config: /etc/prometheus
+    storage: /var/lib/prometheus/metrics
+    install: /opt
+    version_path: /opt/prometheus-{{ version }}.linux-amd64
+  version: {{ version }}.linux-amd64
+  source: https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz
+  source_hash: 7a7f3b3c8d886975c9c1c443ac4ccca053e834a7
+
+{%- endif %}
+{%- endload %}
+
+{%- set server = salt['grains.filter_by'](base_defaults, merge=salt['pillar.get']('prometheus:server')) %}
+
+{%- set alertmanager_version = pillar.prometheus.get('alertmanager', {}).get('version', '0.6.2') %}
+
+{%- load_yaml as alertmanager_defaults %}
+{%- if pillar.docker is defined and pillar.docker.host is defined %}
+Debian:
+  dir:
+    config: /srv/volumes/prometheus
+{%- else %}
+Debian:
+  dir:
+    config: /etc/prometheus
+    storage: /var/lib/prometheus/metrics
+    install: /opt
+    version_path: /opt/alertmanager-{{ alertmanager_version }}.linux-amd64
+  version: {{ alertmanager_version }}.linux-amd64
+  source: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+  source_hash: 82990573096a5805a3db48c729dc111b151c1c24
+
+{%- endif %}
+{%- endload %}
+
+{%- set alertmanager = salt['grains.filter_by'](alertmanager_defaults, merge=salt['pillar.get']('prometheus:alertmanager')) %}
+
+{%- set pushgateway_version = pillar.prometheus.get('pushgateway', {}).get('version', '0.3.1') %}
+
+{%- load_yaml as pushgateway_defaults %}
+{%- if pillar.docker is defined and pillar.docker.host is defined %}
+Debian:
+  dir:
+    config: /srv/volumes/prometheus
+{%- else %}
+Debian:
+  dir:
+    config: /etc/prometheus
+    storage: /var/lib/prometheus-pushgateway/metrics
+    install: /opt
+    version_path: /opt/pushgateway-{{ pushgateway_version }}.linux-amd64
+  version: {{ pushgateway_version }}.linux-amd64
+  source: https://github.com/prometheus/pushgateway/releases/download/v{{ pushgateway_version }}/pushgateway-{{ pushgateway_version }}.linux-amd64.tar.gz
+  source_hash: 237061c45d2b5f4ff706528ed5f4203578901f0d
+
+{%- endif %}
+{%- endload %}
+
+{%- set pushgateway = salt['grains.filter_by'](pushgateway_defaults, merge=salt['pillar.get']('prometheus:pushgateway')) %}

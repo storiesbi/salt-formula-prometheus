@@ -7,4 +7,7 @@ include:
   {%- if pillar.prometheus.alertmanager is defined %}
   - prometheus.alertmanager
   {%- endif %}
+  {%- if pillar.prometheus.pushgateway is defined %}
+  - prometheus.pushgateway
+  {%- endif %}
 {%- endif %}

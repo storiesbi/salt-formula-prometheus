@@ -6,7 +6,11 @@ global:
 {%- endif %}
 
 rule_files:
+{%- if server.dir.config_in_container is defined %}
 - {{ server.dir.config_in_container }}/alerts.yml
+{%- else %}
+- {{ server.dir.config }}/alerts.yml
+{%- endif %}
 
 {%- set static_target = {} %}
 {%- for node_name, node_grains in salt['mine.get']('*', 'grains.items').iteritems() %}
@@ -43,7 +47,7 @@ scrape_configs:
   {%- endif %}
 {%- endfor %}
 
-{%- if server.get('target', {}).get('kubernetes', {}).get('enabled', True) %}
+{%- if server.get('target', {}).get('kubernetes', {}).get('enabled', False) %}
   {%- set kubernetes_target = server.target.kubernetes %}
   - job_name: 'kubernetes-api'
     scheme: https
