@@ -10,4 +10,7 @@ include:
   {%- if pillar.prometheus.pushgateway is defined %}
   - prometheus.pushgateway
   {%- endif %}
+  {%- if pillar.prometheus.collectd_exporter is defined %}
+  - prometheus.collectd_exporter
+  {%- endif %}
 {%- endif %}
