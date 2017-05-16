@@ -59,6 +59,7 @@ Configure prometheus server
       alert:
         PrometheusTargetDown:
           if: 'up != 1'
+          for: 5m
           labels:
             severity: down
           annotations:
