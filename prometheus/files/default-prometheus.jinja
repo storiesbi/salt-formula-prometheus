@@ -1,7 +1,7 @@
 {%- from "prometheus/map.jinja" import server with context %}
 
 # Set the command-line arguments to pass to the server.
-ARGS="-config.file {{server.dir.config}}/prometheus.yml -storage.local.path {{server.dir.storage}} -web.console.libraries {{server.dir.version_path}}/console_libraries -web.console.templates {{ server.dir.version_path }}/consoles {%- if server.alertmanager is defined %} -alertmanager.url {{server.alertmanager.get('protocol', 'http')}}://{{server.alertmanager.get('host', 'localhost')}}:{{server.alertmanager.get('port', 9093)}}{%- endif %}"
+ARGS="-config.file {{server.dir.config}}/prometheus.yml -storage.local.path {{server.dir.storage}} -web.console.libraries {{server.dir.version_path}}/console_libraries -web.console.templates {{ server.dir.version_path }}/consoles {%- if server.alertmanager is defined %} -alertmanager.url {{server.alertmanager.get('protocol', 'http')}}://{{server.alertmanager.get('host', 'localhost')}}:{{server.alertmanager.get('port', 9093)}}{%- endif %} -storage.local.retention {{ server.storage.get('retention', 360) }}0m0s"
 
 # Prometheus supports the following options:
 
