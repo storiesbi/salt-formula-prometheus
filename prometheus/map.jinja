@@ -1,5 +1,5 @@
 
-{%- set version = pillar.prometheus.get('version', '1.6.2') %}
+{%- set version = pillar.prometheus.get('server', {}).get('version', '1.6.2') %}
 
 {%- load_yaml as base_defaults %}
 {%- if pillar.docker is defined and pillar.docker.host is defined %}
@@ -16,7 +16,7 @@ Debian:
     version_path: /opt/prometheus-{{ version }}.linux-amd64
   version: {{ version }}.linux-amd64
   source: https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz
-  source_hash: 7a7f3b3c8d886975c9c1c443ac4ccca053e834a7
+  source_hash: pillar.prometheus.get('server', {}).get('source_hash', '7a7f3b3c8d886975c9c1c443ac4ccca053e834a7')
 
 {%- endif %}
 {%- endload %}
